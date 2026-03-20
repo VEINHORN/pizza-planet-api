@@ -1,4 +1,5 @@
 # Getting Started with [Fastify-CLI](https://www.npmjs.com/package/fastify-cli)
+
 This project was bootstrapped with Fastify-CLI.
 
 ## Available Scripts
@@ -21,3 +22,17 @@ Run the test cases.
 ## Learn More
 
 To learn Fastify, check out the [Fastify documentation](https://fastify.dev/docs/latest/).
+
+## Requests
+
+Check service health:
+
+```shell
+curl localhost:3000/health
+```
+
+Create order:
+
+```shell
+curl -X POST -d @order.json -H "Content-Type: application/json" localhost:3000/orders | jq
+```
