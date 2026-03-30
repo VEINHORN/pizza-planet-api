@@ -11,3 +11,25 @@ Create order:
 ```shell
 curl -X POST -d @order.json -H "Content-Type: application/json" localhost:3000/orders | jq
 ```
+
+order.json content:
+
+```json
+{
+  "orderId": "123",
+  "pizzas": [
+    {
+      "name": "Margherita",
+      "size": "LARGE",
+      "quantity": 2
+    },
+    {
+      "name": "Pepperoni",
+      "size": "SMALL",
+      "quantity": 1
+    }
+  ],
+  "userId": 10,
+  "address": "Vilnius"
+}
+```
