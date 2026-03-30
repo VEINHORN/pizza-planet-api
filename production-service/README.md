@@ -1,0 +1,47 @@
+# production-service
+
+## Endpoints
+
+Check service health:
+
+```shell
+curl localhost:3000/health
+```
+
+Send ingridient shipment:
+
+```shell
+curl -X POST -d @stock.json -H "Content-Type: application/json" localhost:3000/stock | jq
+```
+
+stock.json file content:
+
+```json
+{
+  "supplier": "DairyBest Inc.",
+  "receivedAt": "2026-03-30T10:15:00Z",
+  "lotNumber": "SHIP-20260330-001",
+  "items": [
+    {
+      "ingredientName": "Mozzarella Cheese",
+      "quantity": 25,
+      "unit": "kg",
+      "expiryDate": "2026-04-20",
+      "unitPrice": 8.50
+    },
+    {
+      "ingredientName": "Pepperoni",
+      "quantity": 12,
+      "unit": "kg",
+      "expiryDate": "2026-05-10",
+      "unitPrice": 11.90
+    },
+    {
+      "ingredientName": "Tomato Sauce",
+      "quantity": 30,
+      "unit": "L",
+      "expiryDate": "2026-06-15"
+    }
+  ]
+}
+```
