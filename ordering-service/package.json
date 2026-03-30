@@ -1,7 +1,7 @@
 {
-  "name": "myproject",
+  "name": "ordering-service",
   "version": "1.0.0",
-  "description": "This project was bootstrapped with Fastify-CLI.",
+  "description": "Pizza ordering service",
   "main": "app.ts",
   "scripts": {
     "test": "vitest run",
