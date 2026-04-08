@@ -1,4 +1,6 @@
 import { FastifyPluginAsync } from "fastify";
+import OrderService from "../../service/order.service";
+import { Order, Pizza } from "../../service/Order";
 
 const orders: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
   fastify.post(
@@ -7,9 +9,9 @@ const orders: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
       schema: {
         body: {
           type: "object",
-          required: ["orderId", "pizzas", "userId", "address"],
+          required: ["countryCode", "pizzas", "address"],
           properties: {
-            orderId: { type: "string" },
+            countryCode: { type: "string", enum: ["PL", "LT"] },
             pizzas: {
               type: "array",
               items: {
@@ -21,19 +23,22 @@ const orders: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
                     type: "string",
                     enum: ["SMALL", "LARGE"],
                   },
+                  quantity: { type: "number" },
                 },
               },
             },
-            userId: { type: "number" },
             address: { type: "string" },
           },
         },
       },
     },
     async function (request, reply) {
-      console.log(request.body);
+      // pass country through order.json request (or later through user data)
 
-      return request.body;
+      const { countryCode, pizzas, address } = request.body as Order;
+      return new OrderService().placeOrder(
+        new Order(countryCode, pizzas as Pizza[], address),
+      );
     },
   );
 };

@@ -16,7 +16,7 @@ order.json content:
 
 ```json
 {
-  "orderId": "123",
+  "countryCode": "PL",
   "pizzas": [
     {
       "name": "Margherita",
@@ -29,7 +29,6 @@ order.json content:
       "quantity": 1
     }
   ],
-  "userId": 10,
   "address": "Vilnius"
 }
 ```
