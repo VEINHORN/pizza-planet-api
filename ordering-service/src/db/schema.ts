@@ -7,7 +7,7 @@ import { pgTable } from "drizzle-orm/pg-core";
 export const ordersTable = pgTable("orders", {
   id: uuid().primaryKey().defaultRandom(),
   country_code: text().notNull(),
-  address: text(),
+  address: text().notNull(),
   final_price: integer().notNull(),
   created_at: timestamp().defaultNow(),
 });

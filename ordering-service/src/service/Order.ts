@@ -9,10 +9,12 @@ export class Order {
     public countryCode: string,
     public pizzas: Pizza[],
     public address: string,
+    public finalPrice: number | undefined,
     private _submittedAt: string = new Date().toLocaleTimeString("en-GB", {
       hour: "2-digit",
       minute: "2-digit",
     }),
+    public id?: string,
   ) {}
 
   submittedAt(): string {

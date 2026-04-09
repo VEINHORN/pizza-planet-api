@@ -33,11 +33,9 @@ const orders: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
       },
     },
     async function (request, reply) {
-      // pass country through order.json request (or later through user data)
-
       const { countryCode, pizzas, address } = request.body as Order;
       return new OrderService().placeOrder(
-        new Order(countryCode, pizzas as Pizza[], address),
+        new Order(countryCode, pizzas as Pizza[], address, undefined),
       );
     },
   );

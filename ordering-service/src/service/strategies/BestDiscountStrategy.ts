@@ -8,7 +8,11 @@ export class BestDiscountStrategy implements OrderStrategy {
     private countryConfig: CountryConfig,
   ) {}
 
-  execute(order: Order, basePrice: number): number {
+  execute(
+    order: Order,
+    basePrice: number,
+    countryConfig: CountryConfig,
+  ): number {
     return this.strategies.reduce((bestPrice, strategy) => {
       const candidatePrice = strategy.execute(
         order,
