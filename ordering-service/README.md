@@ -32,3 +32,25 @@ order.json content:
   "address": "Vilnius"
 }
 ```
+
+## Migrations
+
+Apply changes to the database using single command:
+
+```shell
+npx drizzle-kit push
+```
+
+### Using separate commands
+
+Generate migrations:
+
+```shell
+npx drizzle-kit generate 
+```
+
+Apply migrations:
+
+```shell
+npx drizzle-kit migrate
+```
