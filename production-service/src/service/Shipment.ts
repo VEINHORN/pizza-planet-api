@@ -11,6 +11,7 @@ export class Shipment {
       hour: "2-digit",
       minute: "2-digit",
     }),
+    public id?: string,
   ) {}
 
   submittedAt(): string {

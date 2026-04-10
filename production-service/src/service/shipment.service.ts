@@ -1,3 +1,5 @@
+import { db } from "..";
+import { ShipmentRepository } from "../repository/shipment.repository";
 import { Shipment } from "./Shipment";
 import { DefaultShipmentStrategy } from "./strategies/DefaultShipmentStrategy";
 import { MinimumUnitsRejectionStrategy } from "./strategies/MinimumUnitsRejectionStrategy";
@@ -6,12 +8,19 @@ import { ShipmentSplittingStrategy } from "./strategies/ShipmentSplittingStrateg
 import WAREHOUSE_CONFIG from "./WarehouseConfig";
 
 export default class ShipmentService {
-  registerShipment(shipment: Shipment): Shipment[] {
+  async registerShipment(shipment: Shipment): Promise<Shipment[]> {
     const shipmentStrategy = this.getStrategy(shipment);
 
     const shipments = shipmentStrategy.execute(shipment);
 
-    return shipments;
+    const savedShipments: Shipment[] = [];
+    const repository = new ShipmentRepository(db);
+
+    for (const s of shipments) {
+      savedShipments.push(await repository.createShipment(s));
+    }
+
+    return savedShipments;
   }
 
   getStrategy(shipment: Shipment) {
