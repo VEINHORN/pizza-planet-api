@@ -22,16 +22,11 @@ describe("stock route", () => {
       method: "POST",
       url: "/stock/shipments",
       payload: {
-        supplier: "Pizza Supplies Inc",
-        receivedAt: new Date().toISOString(),
-        lotNumber: "LOT-123",
-        items: [
+        targetWarehouse: "warehouse1",
+        ingredients: [
           {
-            ingredientName: "Tomato Sauce",
-            quantity: 10,
-            unit: "kg",
-            expiryDate: "2026-12-31",
-            unitPrice: 50.5,
+            id: "tomato-sauce",
+            units: 50,
           },
         ],
       },
@@ -45,7 +40,8 @@ describe("stock route", () => {
       method: "POST",
       url: "/stock/shipments",
       payload: {
-        items: [],
+        targetWarehouse: "warehouse1",
+        ingredients: [],
       },
     });
 
