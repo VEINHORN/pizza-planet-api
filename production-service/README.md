@@ -18,30 +18,38 @@ stock.json file content:
 
 ```json
 {
-  "supplier": "DairyBest Inc.",
-  "receivedAt": "2026-03-30T10:15:00Z",
-  "lotNumber": "SHIP-20260330-001",
-  "items": [
+  "targetWarehouse": "warehouse1",
+  "ingredients": [
     {
-      "ingredientName": "Mozzarella Cheese",
-      "quantity": 25,
-      "unit": "kg",
-      "expiryDate": "2026-04-20",
-      "unitPrice": 8.50
+      "id": "mozzarella-cheese",
+      "units": 50
     },
     {
-      "ingredientName": "Pepperoni",
-      "quantity": 12,
-      "unit": "kg",
-      "expiryDate": "2026-05-10",
-      "unitPrice": 11.90
-    },
-    {
-      "ingredientName": "Tomato Sauce",
-      "quantity": 30,
-      "unit": "L",
-      "expiryDate": "2026-06-15"
+      "id": "tomato-sauce",
+      "units": 20
     }
   ]
 }
+```
+
+## Migrations
+
+Apply changes to the database using single command:
+
+```shell
+npx drizzle-kit push
+```
+
+### Using separate commands
+
+Generate migrations:
+
+```shell
+npx drizzle-kit generate
+```
+
+Apply migrations:
+
+```shell
+npx drizzle-kit migrate
 ```

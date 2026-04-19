@@ -1,7 +1,25 @@
-import { expect, describe, beforeAll, it, afterAll } from "vitest";
+import {
+  expect,
+  describe,
+  beforeAll,
+  beforeEach,
+  it,
+  afterAll,
+  afterEach,
+  vi,
+} from "vitest";
 import { fastify, FastifyInstance } from "fastify";
 import stock from "./stock";
 import zodPlugin from "../../plugins/zod";
+
+vi.mock("../../repository/shipment.repository", () => {
+  const ShipmentRepository = vi.fn();
+  ShipmentRepository.prototype.createShipment = vi.fn().mockImplementation((shipment) => {
+    shipment.id = "mocked-id";
+    return Promise.resolve(shipment);
+  });
+  return { ShipmentRepository };
+});
 
 describe("stock route", () => {
   let app: FastifyInstance;
@@ -17,21 +35,25 @@ describe("stock route", () => {
     await app.close();
   });
 
+  beforeEach(() => {
+    vi.useFakeTimers({ toFake: ["Date"] });
+    vi.setSystemTime(new Date("2026-04-19T12:00:00"));
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
   it("POST /stock/shipments with valid data", async () => {
     const response = await app.inject({
       method: "POST",
       url: "/stock/shipments",
       payload: {
-        supplier: "Pizza Supplies Inc",
-        receivedAt: new Date().toISOString(),
-        lotNumber: "LOT-123",
-        items: [
+        targetWarehouse: "warehouse1",
+        ingredients: [
           {
-            ingredientName: "Tomato Sauce",
-            quantity: 10,
-            unit: "kg",
-            expiryDate: "2026-12-31",
-            unitPrice: 50.5,
+            id: "tomato-sauce",
+            units: 50,
           },
         ],
       },
@@ -45,7 +67,8 @@ describe("stock route", () => {
       method: "POST",
       url: "/stock/shipments",
       payload: {
-        items: [],
+        targetWarehouse: "warehouse1",
+        ingredients: [],
       },
     });
 
