@@ -1,0 +1,9 @@
+{
+  "name": "pizza-planet-api",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "ordering-service",
+    "production-service"
+  ]
+}

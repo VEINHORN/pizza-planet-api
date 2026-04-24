@@ -19,6 +19,10 @@ For production mode
 
 Run the test cases.
 
+### `npm run build -w packages/api-contracts`
+
+Build the API contracts package.
+
 ## Learn More
 
 To learn Fastify, check out the [Fastify documentation](https://fastify.dev/docs/latest/).
