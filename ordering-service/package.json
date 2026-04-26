@@ -23,7 +23,8 @@
     "fastify-cli": "^7.4.1",
     "fastify-plugin": "^5.0.0",
     "pg": "^8.20.0",
-    "vitest": "^4.1.0"
+    "vitest": "^4.1.0",
+    "@pizza-planet/api-contracts": "*"
   },
   "devDependencies": {
     "@types/node": "^24.0.8",
