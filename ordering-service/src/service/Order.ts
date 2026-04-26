@@ -5,17 +5,31 @@ export type Pizza = {
 };
 
 export class Order {
+  public countryCode: string;
+  public pizzas: Pizza[];
+  public address: string;
+  public finalPrice: number | undefined;
+  private _submittedAt: string;
+  public id?: string;
+
   constructor(
-    public countryCode: string,
-    public pizzas: Pizza[],
-    public address: string,
-    public finalPrice: number | undefined,
-    private _submittedAt: string = new Date().toLocaleTimeString("en-GB", {
+    countryCode: string,
+    pizzas: Pizza[],
+    address: string,
+    finalPrice: number | undefined,
+    submittedAt: string = new Date().toLocaleTimeString("en-GB", {
       hour: "2-digit",
       minute: "2-digit",
     }),
-    public id?: string,
-  ) {}
+    id?: string,
+  ) {
+    this.countryCode = countryCode;
+    this.pizzas = pizzas;
+    this.address = address;
+    this.finalPrice = finalPrice;
+    this._submittedAt = submittedAt;
+    this.id = id;
+  }
 
   submittedAt(): string {
     return this._submittedAt;

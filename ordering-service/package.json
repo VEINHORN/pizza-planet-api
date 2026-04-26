@@ -2,11 +2,12 @@
   "name": "ordering-service",
   "version": "1.0.0",
   "description": "Pizza ordering service",
+  "type": "module",
   "main": "app.ts",
   "scripts": {
     "test": "vitest run",
     "start": "npm run build:ts && fastify start -l info dist/app.js",
-    "build:ts": "tsc",
+    "build:ts": "rm -rf dist && tsc",
     "watch:ts": "tsc -w",
     "dev": "npm run build:ts && concurrently -k -p \"[{name}]\" -n \"TypeScript,App\" -c \"yellow.bold,cyan.bold\" \"npm:watch:ts\" \"npm:dev:start\"",
     "dev:start": "fastify start --ignore-watch=.ts$ -w -l info -P dist/app.js"

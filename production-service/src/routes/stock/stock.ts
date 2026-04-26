@@ -1,6 +1,6 @@
-import { FastifyPluginAsync } from "fastify";
-import { ZodTypeProvider } from "fastify-type-provider-zod";
-import { ingridientShipmentSchema } from "../../schemas/stock.schema";
+import type { FastifyPluginAsync } from "fastify";
+import type { ZodTypeProvider } from "fastify-type-provider-zod";
+import { ingridientShipmentSchema } from "../../schemas/stock.schema.ts";
 
 const stock: FastifyPluginAsync = async (fastify): Promise<void> => {
   fastify.withTypeProvider<ZodTypeProvider>().post(

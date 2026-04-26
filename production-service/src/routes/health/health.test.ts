@@ -1,14 +1,12 @@
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
-import fastify, { FastifyInstance } from "fastify";
-import health from "./health";
+import type { FastifyInstance } from "fastify";
+import { createApp } from "../../app.ts";
 
 describe("health route", () => {
   let app: FastifyInstance;
 
   beforeAll(async () => {
-    app = fastify();
-    void app.register(health, { prefix: "/health" });
-    await app.ready();
+    app = await createApp();
   });
 
   afterAll(async () => {

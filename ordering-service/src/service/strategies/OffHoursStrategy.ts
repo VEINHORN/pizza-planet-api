@@ -1,7 +1,7 @@
-import { CountryConfig } from "../CountryConfig";
-import { Order } from "../Order";
-import { OrderStrategy } from "./OrderStrategy";
-import { OffHoursError } from "../errors";
+import type { CountryConfig } from "../CountryConfig.ts";
+import type { Order } from "../Order.ts";
+import type { OrderStrategy } from "./OrderStrategy.ts";
+import { OffHoursError } from "../errors.ts";
 
 export class OffHoursStrategy implements OrderStrategy {
   execute(

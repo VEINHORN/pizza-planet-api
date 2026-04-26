@@ -1,12 +1,18 @@
-import { CountryConfig } from "../CountryConfig";
-import { Order } from "../Order";
-import { OrderStrategy } from "./OrderStrategy";
+import type { CountryConfig } from "../CountryConfig.ts";
+import type { Order } from "../Order.ts";
+import type { OrderStrategy } from "./OrderStrategy.ts";
 
 export class BestDiscountStrategy implements OrderStrategy {
+  private strategies: OrderStrategy[];
+  private countryConfig: CountryConfig;
+
   constructor(
-    private strategies: OrderStrategy[],
-    private countryConfig: CountryConfig,
-  ) {}
+    strategies: OrderStrategy[],
+    countryConfig: CountryConfig,
+  ) {
+    this.strategies = strategies;
+    this.countryConfig = countryConfig;
+  }
 
   execute(
     order: Order,

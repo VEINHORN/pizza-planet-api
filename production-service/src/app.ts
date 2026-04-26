@@ -1,11 +1,19 @@
-import { join } from "node:path";
-import AutoLoad, { AutoloadPluginOptions } from "@fastify/autoload";
-import type { FastifyPluginAsync, FastifyServerOptions } from "fastify";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
+import AutoLoad from "@fastify/autoload";
+import fastify from "fastify";
+import type { AutoloadPluginOptions } from "@fastify/autoload";
+import type {
+  FastifyInstance,
+  FastifyPluginAsync,
+  FastifyServerOptions,
+} from "fastify";
 
 export interface AppOptions
   extends FastifyServerOptions, Partial<AutoloadPluginOptions> {}
 // Pass --options via CLI arguments in command to enable these options.
 const options: AppOptions = {};
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const app: FastifyPluginAsync<AppOptions> = async (
   fastify,
@@ -33,6 +41,17 @@ const app: FastifyPluginAsync<AppOptions> = async (
     options: opts,
     ignorePattern: /.*\.test\.js$/,
   });
+};
+
+export const createApp = async (
+  opts: AppOptions = {},
+): Promise<FastifyInstance> => {
+  const server = fastify(opts);
+
+  void server.register(app, opts);
+  await server.ready();
+
+  return server;
 };
 
 export default app;

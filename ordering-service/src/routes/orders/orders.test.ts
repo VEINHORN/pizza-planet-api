@@ -1,37 +1,34 @@
-import fastify, { FastifyInstance } from "fastify";
-import {
-  serializerCompiler,
-  validatorCompiler,
-  ZodTypeProvider,
-} from "fastify-type-provider-zod";
-import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
-import orders from "./orders";
-import OrderService from "../../service/order.service";
-import { OffHoursError } from "../../service/errors";
-
-vi.mock("../../service/order.service");
+import type { FastifyInstance } from "fastify";
+import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from "vitest";
+import { createApp } from "../../app.ts";
+import { OffHoursError } from "../../service/errors.ts";
 
 describe("orders route", () => {
   let app: FastifyInstance;
+  let placeOrderMock: ReturnType<typeof vi.fn>;
 
   beforeAll(async () => {
-    app = fastify().withTypeProvider<ZodTypeProvider>();
-    app.setValidatorCompiler(validatorCompiler);
-    app.setSerializerCompiler(serializerCompiler);
-    void app.register(orders, { prefix: "/orders" });
-    await app.ready();
+    placeOrderMock = vi.fn();
+    app = await createApp({
+      orderServiceFactory: () => ({
+        placeOrder: placeOrderMock,
+      }),
+    } as any);
   });
 
   afterAll(async () => {
     await app.close();
   });
 
+  afterEach(() => {
+    placeOrderMock.mockReset();
+  });
+
   it("should return 200 response status and calculated price", async () => {
-    const mockPlaceOrder = vi.fn().mockResolvedValue({
+    placeOrderMock.mockResolvedValue({
       id: "test-id",
       price: 40,
     });
-    OrderService.prototype.placeOrder = mockPlaceOrder;
 
     const reqPayload = {
       countryCode: "LT",
@@ -63,8 +60,9 @@ describe("orders route", () => {
   });
 
   it("should return 400 status when order is placed during off-hours", async () => {
-    const mockPlaceOrder = vi.fn().mockRejectedValue(new OffHoursError("Order cannot be submitted out of the working hours"));
-    OrderService.prototype.placeOrder = mockPlaceOrder;
+    placeOrderMock.mockRejectedValue(
+      new OffHoursError("Order cannot be submitted out of the working hours"),
+    );
 
     const reqPayload = {
       countryCode: "LT",

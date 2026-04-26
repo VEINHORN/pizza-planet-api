@@ -1,8 +1,8 @@
 import { describe, expect, it, vi } from "vitest";
-import OrderService from "./order.service";
-import { Order, Pizza } from "./Order";
-import { ProductionServiceClient } from "./ProductionServiceClient";
-import { OrderRepository } from "../repository/order.repository";
+import OrderService from "./order.service.ts";
+import { Order, type Pizza } from "./Order.ts";
+import { ProductionServiceClient } from "./ProductionServiceClient.ts";
+import { OrderRepository } from "../repository/order.repository.ts";
 
 describe("OrderService", () => {
   const mockProductionClient = {

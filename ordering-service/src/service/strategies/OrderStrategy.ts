@@ -1,5 +1,5 @@
-import { CountryConfig } from "../CountryConfig";
-import { Order } from "../Order";
+import type { CountryConfig } from "../CountryConfig.ts";
+import type { Order } from "../Order.ts";
 
 export interface OrderStrategy {
   execute(

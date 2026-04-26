@@ -1,10 +1,10 @@
-import { db } from "..";
-import { OrderRepository } from "../repository/order.repository";
-import COUNTRY_CONFIG from "./CountryConfig";
-import { Order } from "./Order";
-import { PriceCalculator } from "./PriceCalculator";
-import { OrderStrategyFactory } from "./strategies/OrderStrategyFactory";
-import { ProductionServiceClient } from "./ProductionServiceClient";
+import { db } from "../index.ts";
+import { OrderRepository } from "../repository/order.repository.ts";
+import COUNTRY_CONFIG from "./CountryConfig.ts";
+import { Order } from "./Order.ts";
+import { PriceCalculator } from "./PriceCalculator.ts";
+import { OrderStrategyFactory } from "./strategies/OrderStrategyFactory.ts";
+import { ProductionServiceClient } from "./ProductionServiceClient.ts";
 
 export default class OrderService {
   private productionClient: ProductionServiceClient;

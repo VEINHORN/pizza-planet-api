@@ -1,6 +1,6 @@
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
-import { Order, Pizza } from "../service/Order";
-import { ordersTable, orderItemTable } from "../db/schema";
+import { Order, type Pizza } from "../service/Order.ts";
+import { ordersTable, orderItemTable } from "../db/schema.ts";
 import { eq } from "drizzle-orm";
 
 export class OrderRepository {

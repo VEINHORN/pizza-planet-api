@@ -1,16 +1,12 @@
 import { expect, describe, beforeAll, it, afterAll } from "vitest";
-import { fastify, FastifyInstance } from "fastify";
-import ingredients from "./ingredients";
-import zodPlugin from "../../plugins/zod";
+import type { FastifyInstance } from "fastify";
+import { createApp } from "../../app.ts";
 
 describe("ingredients route", () => {
   let app: FastifyInstance;
 
   beforeAll(async () => {
-    app = fastify();
-    void app.register(zodPlugin);
-    void app.register(ingredients, { prefix: "/ingredients" });
-    await app.ready();
+    app = await createApp();
   });
 
   afterAll(async () => {

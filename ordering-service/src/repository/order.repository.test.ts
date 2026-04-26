@@ -1,6 +1,6 @@
 import { describe, expect, it, vi, beforeEach } from "vitest";
-import { OrderRepository } from "./order.repository";
-import { Order, Pizza } from "../service/Order";
+import { OrderRepository } from "./order.repository.ts";
+import { Order, type Pizza } from "../service/Order.ts";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
 
 describe("OrderRepository", () => {

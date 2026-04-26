@@ -2,14 +2,15 @@
   "name": "production-service",
   "version": "1.0.0",
   "description": "Pizza production service",
+  "type": "module",
   "main": "app.ts",
   "scripts": {
     "test": "vitest run",
-    "start": "npm run build:ts && fastify start -l info dist/app.js",
-    "build:ts": "tsc",
+    "start": "npm run build:ts && fastify start -p 3001 -l info dist/app.js",
+    "build:ts": "rm -rf dist && tsc",
     "watch:ts": "tsc -w",
     "dev": "npm run build:ts && concurrently -k -p \"[{name}]\" -n \"TypeScript,App\" -c \"yellow.bold,cyan.bold\" \"npm:watch:ts\" \"npm:dev:start\"",
-    "dev:start": "fastify start --ignore-watch=.ts$ -w -l info -P dist/app.js"
+    "dev:start": "fastify start -p 3001 --ignore-watch=.ts$ -w -l info -P dist/app.js"
   },
   "keywords": [],
   "author": "",

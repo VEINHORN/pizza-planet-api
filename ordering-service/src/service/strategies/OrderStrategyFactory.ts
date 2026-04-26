@@ -1,11 +1,11 @@
-import { Order } from "../Order";
-import { OrderStrategy } from "./OrderStrategy";
-import { OffHoursStrategy } from "./OffHoursStrategy";
-import { PeakHoursDiscountStrategy } from "./PeakHoursDiscountStrategy";
-import { LargeOrderDiscountStrategy } from "./LargeOrderDiscountStrategy";
-import { DefaultOrderStrategy } from "./DefaultOrderStrategy";
-import { BestDiscountStrategy } from "./BestDiscountStrategy";
-import COUNTRY_CONFIG from "../CountryConfig";
+import type { Order } from "../Order.ts";
+import type { OrderStrategy } from "./OrderStrategy.ts";
+import { OffHoursStrategy } from "./OffHoursStrategy.ts";
+import { PeakHoursDiscountStrategy } from "./PeakHoursDiscountStrategy.ts";
+import { LargeOrderDiscountStrategy } from "./LargeOrderDiscountStrategy.ts";
+import { DefaultOrderStrategy } from "./DefaultOrderStrategy.ts";
+import { BestDiscountStrategy } from "./BestDiscountStrategy.ts";
+import COUNTRY_CONFIG from "../CountryConfig.ts";
 
 export class OrderStrategyFactory {
   static getStrategy(order: Order, basePrice: number): OrderStrategy {

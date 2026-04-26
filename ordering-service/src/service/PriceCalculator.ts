@@ -1,4 +1,4 @@
-import { Order } from "./Order";
+import { Order } from "./Order.ts";
 
 const PIZZA_PRICES: Record<string, number> = {
   Margherita: 10,

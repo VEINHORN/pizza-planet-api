@@ -1,8 +1,8 @@
-import { FastifyPluginAsync } from "fastify";
-import { ZodTypeProvider } from "fastify-type-provider-zod";
+import type { FastifyPluginAsync } from "fastify";
+import type { ZodTypeProvider } from "fastify-type-provider-zod";
 import { z } from "zod";
-import OrderService from "../../service/order.service";
-import { Order, Pizza } from "../../service/Order";
+import OrderService from "../../service/order.service.ts";
+import { Order, type Pizza } from "../../service/Order.ts";
 
 const orderSchema = z.object({
   countryCode: z.enum(["PL", "LT"]),
@@ -16,7 +16,21 @@ const orderSchema = z.object({
   address: z.string(),
 });
 
-const orders: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
+type OrderServiceLike = {
+  placeOrder(order: Order): Promise<{ id: string; price: number }>;
+};
+
+export type OrdersRouteOptions = {
+  orderServiceFactory?: () => OrderServiceLike;
+};
+
+const orders: FastifyPluginAsync<OrdersRouteOptions> = async (
+  fastify,
+  opts,
+): Promise<void> => {
+  const orderServiceFactory =
+    opts.orderServiceFactory ?? (() => new OrderService());
+
   fastify.withTypeProvider<ZodTypeProvider>().post(
     "/",
     {
@@ -28,7 +42,7 @@ const orders: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
     },
     async function (request, reply) {
       const { countryCode, pizzas, address } = request.body;
-      return new OrderService().placeOrder(
+      return orderServiceFactory().placeOrder(
         new Order(countryCode, pizzas as Pizza[], address, undefined),
       );
     },
