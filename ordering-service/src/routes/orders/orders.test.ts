@@ -1,4 +1,9 @@
 import fastify, { FastifyInstance } from "fastify";
+import {
+  serializerCompiler,
+  validatorCompiler,
+  ZodTypeProvider,
+} from "fastify-type-provider-zod";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import orders from "./orders";
 import OrderService from "../../service/order.service";
@@ -10,7 +15,9 @@ describe("orders route", () => {
   let app: FastifyInstance;
 
   beforeAll(async () => {
-    app = fastify();
+    app = fastify().withTypeProvider<ZodTypeProvider>();
+    app.setValidatorCompiler(validatorCompiler);
+    app.setSerializerCompiler(serializerCompiler);
     void app.register(orders, { prefix: "/orders" });
     await app.ready();
   });

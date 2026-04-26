@@ -1,28 +1,31 @@
-# Getting Started with [Fastify-CLI](https://www.npmjs.com/package/fastify-cli)
+# Pizza Planet API
 
-This project was bootstrapped with Fastify-CLI.
+This is a monorepo for the Pizza Planet API.
 
-## Available Scripts
+## Available Services
 
-In the project directory, you can run:
+### Ordering Service
+To start the ordering service in development mode:
+```shell
+npm run -w ordering-service dev
+```
 
-### `npm run dev`
+### Production Service
+To start the production service in development mode:
+```shell
+npm run -w production-service dev
+```
 
-To start the app in dev mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Shared Packages
 
-### `npm start`
+### API Contracts
+Build the shared contracts:
+```shell
+npm run build -w packages/api-contracts
+```
 
-For production mode
-
-### `npm run test`
-
-Run the test cases.
-
-### `npm run build -w packages/api-contracts`
-
-Build the API contracts package.
-
-## Learn More
-
-To learn Fastify, check out the [Fastify documentation](https://fastify.dev/docs/latest/).
+## Running Tests
+Run tests for all workspaces:
+```shell
+npm test
+```

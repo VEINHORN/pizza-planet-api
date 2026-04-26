@@ -1,0 +1,23 @@
+### Check Service Health
+GET http://localhost:3000/health
+
+### Place a New Order
+POST http://localhost:3000/orders
+Content-Type: application/json
+
+{
+  "countryCode": "PL",
+  "pizzas": [
+    {
+      "name": "Margherita",
+      "size": "LARGE",
+      "quantity": 2
+    },
+    {
+      "name": "Pepperoni",
+      "size": "SMALL",
+      "quantity": 1
+    }
+  ],
+  "address": "Vilnius"
+}

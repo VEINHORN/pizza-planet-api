@@ -1,0 +1,16 @@
+{
+  "countryCode": "PL",
+  "pizzas": [
+    {
+      "name": "Margherita",
+      "size": "LARGE",
+      "quantity": 2
+    },
+    {
+      "name": "Pepperoni",
+      "size": "SMALL",
+      "quantity": 5
+    }
+  ],
+  "address": "Vilnius"
+}

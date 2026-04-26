@@ -1,37 +1,33 @@
 # ordering-service
 
+## Development
+
+Start the service in development mode from the root:
+```shell
+npm run -w ordering-service dev
+```
+
+## Documentation
+
+- **Interactive API Docs**: [http://localhost:3000/documentation](http://localhost:3000/documentation)
+- **Executable Examples**: See [api.http](./api.http) (requires REST Client extension)
+
 ## Endpoints
 
+### Health Check
 ```shell
 curl localhost:3000/health
 ```
 
-Create order:
-
+### Create Order
 ```shell
-curl -X POST -d @order.json -H "Content-Type: application/json" localhost:3000/orders | jq
-```
-
-order.json content:
-
-```json
-{
+curl -X POST -H "Content-Type: application/json" -d '{
   "countryCode": "PL",
-  "pizzas": [
-    {
-      "name": "Margherita",
-      "size": "LARGE",
-      "quantity": 2
-    },
-    {
-      "name": "Pepperoni",
-      "size": "SMALL",
-      "quantity": 1
-    }
-  ],
-  "address": "Vilnius"
-}
+  "pizzas": [{ "name": "Margherita", "size": "LARGE", "quantity": 1 }],
+  "address": "Main St 1"
+}' localhost:3000/orders
 ```
+
 
 ## Migrations
 
