@@ -1,9 +1,27 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import OrderService from "./order.service";
 import { Order, Pizza } from "./Order";
+import { ProductionServiceClient } from "./ProductionServiceClient";
+import { OrderRepository } from "../repository/order.repository";
 
 describe("OrderService", () => {
-  const orderService = new OrderService();
+  const mockProductionClient = {
+    checkIngredientAvailability: vi
+      .fn()
+      .mockResolvedValue({ amount: 100, unit: "kg" }),
+  } as unknown as ProductionServiceClient;
+
+  const mockOrderRepository = {
+    save: vi.fn().mockImplementation((order: Order) => {
+      return Promise.resolve({
+        ...order,
+        id: "test-id",
+        finalPrice: Math.round(order.finalPrice ?? 0),
+      });
+    }),
+  } as unknown as OrderRepository;
+
+  const orderService = new OrderService(mockProductionClient, mockOrderRepository);
 
   const margherita: Pizza = { name: "Margherita", size: "LARGE", quantity: 1 }; // price 10
   const pepperoni: Pizza = { name: "Pepperoni", size: "LARGE", quantity: 1 }; // price 20

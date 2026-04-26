@@ -8,7 +8,7 @@ const requestPathParamsSchema = z.object({
 export const getIngredientAvailability = buildContract({
   method: "get",
   pathResolver: (params: z.infer<typeof requestPathParamsSchema>) =>
-    `/shipments/ingredients/${params.ingredientId}/availability`,
+    `/ingredients/${params.ingredientId}`,
   requestPathParamsSchema,
   successResponseBodySchema: z.object({
     amount: z
