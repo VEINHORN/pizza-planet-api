@@ -1,16 +1,52 @@
-import { expect, describe, beforeAll, it, afterAll } from "vitest";
-import type { FastifyInstance } from "fastify";
-import { createApp } from "../../app.ts";
+import {
+  expect,
+  describe,
+  beforeAll,
+  beforeEach,
+  it,
+  afterAll,
+  afterEach,
+  vi,
+} from "vitest";
+import fastify, { type FastifyInstance } from "fastify";
+
+vi.mock("../../service/shipment.service.ts", () => {
+  const ShipmentService = vi.fn();
+  ShipmentService.prototype.registerShipment = vi
+    .fn()
+    .mockImplementation((shipment) => {
+      shipment.id = "mocked-id";
+      return Promise.resolve([shipment]);
+    });
+  return { default: ShipmentService };
+});
 
 describe("stock route", () => {
   let app: FastifyInstance;
 
   beforeAll(async () => {
-    app = await createApp();
+    const [{ default: zodPlugin }, { default: stockRoute }] = await Promise.all([
+      import("../../plugins/zod.ts"),
+      import("./stock.ts"),
+    ]);
+
+    app = fastify();
+    await app.register(zodPlugin);
+    await app.register(stockRoute, { prefix: "/stock" });
+    await app.ready();
   });
 
   afterAll(async () => {
     await app.close();
+  });
+
+  beforeEach(() => {
+    vi.useFakeTimers({ toFake: ["Date"] });
+    vi.setSystemTime(new Date("2026-04-19T12:00:00"));
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
   });
 
   it("POST /stock/shipments with valid data", async () => {
@@ -18,16 +54,11 @@ describe("stock route", () => {
       method: "POST",
       url: "/stock/shipments",
       payload: {
-        supplier: "Pizza Supplies Inc",
-        receivedAt: new Date().toISOString(),
-        lotNumber: "LOT-123",
-        items: [
+        targetWarehouse: "warehouse1",
+        ingredients: [
           {
-            ingredientName: "Tomato Sauce",
-            quantity: 10,
-            unit: "kg",
-            expiryDate: "2026-12-31",
-            unitPrice: 50.5,
+            id: "tomato-sauce",
+            units: 50,
           },
         ],
       },
@@ -41,7 +72,8 @@ describe("stock route", () => {
       method: "POST",
       url: "/stock/shipments",
       payload: {
-        items: [],
+        targetWarehouse: "warehouse1",
+        ingredients: [],
       },
     });
 

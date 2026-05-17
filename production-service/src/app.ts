@@ -14,6 +14,7 @@ export interface AppOptions
 // Pass --options via CLI arguments in command to enable these options.
 const options: AppOptions = {};
 const __dirname = dirname(fileURLToPath(import.meta.url));
+const ignoreTestFilesPattern = /.*\.test\.(js|ts)$/;
 
 const app: FastifyPluginAsync<AppOptions> = async (
   fastify,
@@ -30,7 +31,7 @@ const app: FastifyPluginAsync<AppOptions> = async (
   void fastify.register(AutoLoad, {
     dir: join(__dirname, "plugins"),
     options: opts,
-    ignorePattern: /.*\.test\.js$/,
+    ignorePattern: ignoreTestFilesPattern,
   });
 
   // This loads all plugins defined in routes
@@ -39,7 +40,7 @@ const app: FastifyPluginAsync<AppOptions> = async (
   void fastify.register(AutoLoad, {
     dir: join(__dirname, "routes"),
     options: opts,
-    ignorePattern: /.*\.test\.js$/,
+    ignorePattern: ignoreTestFilesPattern,
   });
 };
 
