@@ -9,6 +9,7 @@ export class Order {
   public pizzas: Pizza[];
   public address: string;
   public finalPrice: number | undefined;
+  public status: string;
   private _submittedAt: string;
   public id?: string;
 
@@ -22,6 +23,7 @@ export class Order {
       minute: "2-digit",
     }),
     id?: string,
+    status: string = "PENDING",
   ) {
     this.countryCode = countryCode;
     this.pizzas = pizzas;
@@ -29,6 +31,7 @@ export class Order {
     this.finalPrice = finalPrice;
     this._submittedAt = submittedAt;
     this.id = id;
+    this.status = status;
   }
 
   submittedAt(): string {

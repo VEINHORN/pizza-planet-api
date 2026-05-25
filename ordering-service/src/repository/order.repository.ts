@@ -18,6 +18,7 @@ export class OrderRepository {
           country_code: order.countryCode,
           address: order.address,
           final_price: Math.round(order.finalPrice ?? 0),
+          status: order.status,
         })
         .returning();
 
@@ -44,6 +45,7 @@ export class OrderRepository {
           minute: "2-digit",
         }) ?? undefined,
         savedOrderRow.id,
+        savedOrderRow.status,
       );
     });
   }
@@ -79,6 +81,7 @@ export class OrderRepository {
         minute: "2-digit",
       }) ?? undefined,
       orderRow.id,
+      orderRow.status,
     );
   }
 
@@ -119,8 +122,61 @@ export class OrderRepository {
             minute: "2-digit",
           }) ?? undefined,
           orderRow.id,
+          orderRow.status,
         ),
     );
+  }
+
+  async updateOrderStatus(orderId: string, status: string): Promise<void> {
+    await this.db
+      .update(ordersTable)
+      .set({ status })
+      .where(eq(ordersTable.id, orderId));
+  }
+
+  async findPendingOrdersByPizzaType(pizzaType: string): Promise<Order[]> {
+    const rows = await this.db
+      .select({
+        order: ordersTable,
+        item: orderItemTable,
+      })
+      .from(ordersTable)
+      .innerJoin(orderItemTable, eq(ordersTable.id, orderItemTable.order_id))
+      .where(eq(ordersTable.status, "PENDING"));
+
+    const ordersMap = new Map<string, { orderRow: any; pizzas: Pizza[] }>();
+
+    for (const row of rows) {
+      const orderId = row.order.id;
+      if (!ordersMap.has(orderId)) {
+        ordersMap.set(orderId, { orderRow: row.order, pizzas: [] });
+      }
+      if (row.item) {
+        ordersMap.get(orderId)!.pizzas.push({
+          name: row.item.name ?? "",
+          size: row.item.size as "SMALL" | "LARGE",
+          quantity: row.item.quantity ?? 0,
+        });
+      }
+    }
+
+    return Array.from(ordersMap.values())
+      .filter(({ pizzas }) => pizzas.some((p) => p.name === pizzaType))
+      .map(
+        ({ orderRow, pizzas }) =>
+          new Order(
+            orderRow.country_code,
+            pizzas,
+            orderRow.address,
+            orderRow.final_price,
+            orderRow.created_at?.toLocaleTimeString("en-GB", {
+              hour: "2-digit",
+              minute: "2-digit",
+            }) ?? undefined,
+            orderRow.id,
+            orderRow.status,
+          ),
+      );
   }
 
   async deleteOrder(orderId: string): Promise<void> {

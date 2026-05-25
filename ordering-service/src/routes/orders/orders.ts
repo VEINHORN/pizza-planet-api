@@ -41,7 +41,7 @@ const orders: FastifyPluginAsync<OrdersRouteOptions> = async (
       },
     },
     async function (request, reply) {
-      const { countryCode, pizzas, address } = request.body;
+      const { countryCode, pizzas, address } = request.body as z.infer<typeof orderSchema>;
       return orderServiceFactory().placeOrder(
         new Order(countryCode, pizzas as Pizza[], address, undefined),
       );

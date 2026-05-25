@@ -1,6 +1,6 @@
-import { expect, describe, beforeAll, it, afterAll } from "vitest";
+import { describe, expect, it, beforeAll, afterAll } from "vitest";
+import { createApp } from "../app.ts";
 import type { FastifyInstance } from "fastify";
-import { createApp } from "../../app.ts";
 
 describe("ingredients route", () => {
   let app: FastifyInstance;
@@ -16,7 +16,7 @@ describe("ingredients route", () => {
   it("GET /ingredients/:ingredientId should return availability", async () => {
     const response = await app.inject({
       method: "GET",
-      url: "/ingredients/tomato-sauce",
+      url: "/ingredients/mozzarella-123",
     });
 
     expect(response.statusCode).toBe(200);

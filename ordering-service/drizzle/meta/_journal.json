@@ -8,6 +8,13 @@
       "when": 1775734024854,
       "tag": "0000_fair_sister_grimm",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1775834400000,
+      "tag": "0001_add_orders_status_and_address_not_null",
+      "breakpoints": true
     }
   ]
 }

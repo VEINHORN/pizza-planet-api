@@ -1,25 +1,22 @@
+import { buildClient, sendByApiContract } from "@lokalise/backend-http-client";
 import { getIngredientAvailability } from "@pizza-planet/api-contracts";
 
 export class ProductionServiceClient {
-  private baseUrl: string;
+  private client: any;
 
   constructor(baseUrl: string = process.env.PRODUCTION_SERVICE_URL || "http://localhost:3001") {
-    this.baseUrl = baseUrl;
+    this.client = buildClient(baseUrl);
   }
 
   async checkIngredientAvailability(ingredientId: string) {
-    const path = getIngredientAvailability.pathResolver({ ingredientId });
-    const url = `${this.baseUrl}${path}`;
+    const { result, error } = await sendByApiContract(this.client, getIngredientAvailability as any, {
+      pathParams: { ingredientId },
+    } as any);
 
-    const response = await fetch(url);
-    
-    if (!response.ok) {
-      throw new Error(`Failed to check ingredient availability for ${ingredientId}: ${response.statusText}`);
+    if (error) {
+      throw new Error(`Failed to check ingredient availability for ${ingredientId}: ${JSON.stringify(error)}`);
     }
 
-    const data = await response.json();
-    
-    // Validate response using the contract's schema
-    return getIngredientAvailability.successResponseBodySchema.parse(data);
+    return result.body;
   }
 }

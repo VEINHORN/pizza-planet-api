@@ -38,4 +38,17 @@ export default class OrderService {
       price: savedOrder.finalPrice,
     };
   }
+
+  async handlePizzasMade(pizzas: { type: string; amount: number }[]) {
+    for (const pizza of pizzas) {
+      const orders = await this.orderRepository.findPendingOrdersByPizzaType(
+        pizza.type,
+      );
+      for (const order of orders) {
+        if (order.id) {
+          await this.orderRepository.updateOrderStatus(order.id, "READY");
+        }
+      }
+    }
+  }
 }
