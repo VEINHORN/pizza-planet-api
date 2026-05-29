@@ -16,7 +16,7 @@ const stock: FastifyPluginAsync = async (fastify): Promise<void> => {
         body: shipmentSchema,
       },
     },
-    async function (request, reply) {
+    async function (request: any, reply) {
       const { targetWarehouse, ingredients } = request.body;
 
       return new ShipmentService().registerShipment(

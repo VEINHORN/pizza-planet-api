@@ -9,6 +9,7 @@ export const ordersTable = pgTable("orders", {
   country_code: text().notNull(),
   address: text().notNull(),
   final_price: integer().notNull(),
+  status: text().notNull().default("PENDING"),
   created_at: timestamp().defaultNow(),
 });
 
