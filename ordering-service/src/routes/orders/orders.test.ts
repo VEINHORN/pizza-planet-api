@@ -6,13 +6,18 @@ import { OffHoursError } from "../../service/errors.ts";
 describe("orders route", () => {
   let app: FastifyInstance;
   let placeOrderMock: ReturnType<typeof vi.fn>;
+  let scheduleStaleOrderMock: ReturnType<typeof vi.fn>;
 
   beforeAll(async () => {
     placeOrderMock = vi.fn();
+    scheduleStaleOrderMock = vi.fn();
     app = await createApp({
       orderServiceFactory: () => ({
         placeOrder: placeOrderMock,
       }),
+      staleOrderScheduler: {
+        schedule: scheduleStaleOrderMock,
+      },
     } as any);
   });
 
@@ -22,6 +27,7 @@ describe("orders route", () => {
 
   afterEach(() => {
     placeOrderMock.mockReset();
+    scheduleStaleOrderMock.mockReset();
   });
 
   it("should return 200 response status and calculated price", async () => {
@@ -57,6 +63,7 @@ describe("orders route", () => {
     const body = JSON.parse(res.payload);
     expect(body.id).toBeDefined();
     expect(body.price).toBe(40);
+    expect(scheduleStaleOrderMock).toHaveBeenCalledWith("test-id");
   });
 
   it("should return 400 status when order is placed during off-hours", async () => {

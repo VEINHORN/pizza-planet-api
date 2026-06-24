@@ -3,7 +3,7 @@ import { Shipment, type Ingredient } from "../service/Shipment.ts";
 import type { NodePgDatabase } from "drizzle-orm/node-postgres";
 
 vi.mock("../db/schema.ts", () => ({
-  shipmentsTable: { id: "shipment-id-column" },
+  shipmentsTable: { id: "shipment-id-column", created_at: "shipment-created-at-column" },
   shipmentIngredientsTable: {
     shipment_id: "shipment-ingredient-shipment-id-column",
   },
@@ -11,6 +11,7 @@ vi.mock("../db/schema.ts", () => ({
 
 vi.mock("drizzle-orm", () => ({
   eq: vi.fn((left, right) => ({ left, right })),
+  lt: vi.fn((left, right) => ({ left, right })),
 }));
 
 describe("ShipmentRepository", () => {
@@ -130,5 +131,18 @@ describe("ShipmentRepository", () => {
     await repository.deleteShipment(shipmentId);
     expect(mockDb.delete).toHaveBeenCalled();
     expect(mockDb.where).toHaveBeenCalled();
+  });
+
+  it("should delete shipments older than a cutoff date", async () => {
+    const cutoff = new Date("2026-06-17T00:00:00.000Z");
+
+    mockDb.returning.mockResolvedValueOnce([{ id: "shipment-1" }, { id: "shipment-2" }]);
+
+    const deletedShipmentsCount = await repository.deleteShipmentsOlderThan(cutoff);
+
+    expect(mockDb.delete).toHaveBeenCalledWith({ id: "shipment-id-column", created_at: "shipment-created-at-column" });
+    expect(mockDb.where).toHaveBeenCalled();
+    expect(mockDb.returning).toHaveBeenCalledWith({ id: "shipment-id-column" });
+    expect(deletedShipmentsCount).toBe(2);
   });
 });

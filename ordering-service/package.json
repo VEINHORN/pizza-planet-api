@@ -29,6 +29,7 @@
     "fastify-cli": "^7.4.1",
     "fastify-plugin": "^5.0.0",
     "fastify-type-provider-zod": "^6.1.0",
+    "pg-boss": "^12.21.1",
     "pg": "^8.20.0",
     "vitest": "^4.1.0",
     "zod": "^4.3.6"
