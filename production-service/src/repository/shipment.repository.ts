@@ -1,7 +1,7 @@
 import type { NodePgDatabase } from "drizzle-orm/node-postgres";
 import { Shipment, type Ingredient } from "../service/Shipment.ts";
 import { shipmentsTable, shipmentIngredientsTable } from "../db/schema.ts";
-import { eq } from "drizzle-orm";
+import { eq, lt } from "drizzle-orm";
 
 export class ShipmentRepository {
   private readonly db: NodePgDatabase;
@@ -114,5 +114,14 @@ export class ShipmentRepository {
 
   async deleteShipment(shipmentId: string): Promise<void> {
     await this.db.delete(shipmentsTable).where(eq(shipmentsTable.id, shipmentId));
+  }
+
+  async deleteShipmentsOlderThan(cutoff: Date): Promise<number> {
+    const deletedShipments = await this.db
+      .delete(shipmentsTable)
+      .where(lt(shipmentsTable.created_at, cutoff))
+      .returning({ id: shipmentsTable.id });
+
+    return deletedShipments.length;
   }
 }

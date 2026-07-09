@@ -1,7 +1,7 @@
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
 import { Order, type Pizza } from "../service/Order.ts";
 import { ordersTable, orderItemTable } from "../db/schema.ts";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 
 export class OrderRepository {
   private readonly db: NodePgDatabase;
@@ -132,6 +132,16 @@ export class OrderRepository {
       .update(ordersTable)
       .set({ status })
       .where(eq(ordersTable.id, orderId));
+  }
+
+  async markOrderAsStale(orderId: string): Promise<boolean> {
+    const updatedOrders = await this.db
+      .update(ordersTable)
+      .set({ status: "STALE" })
+      .where(and(eq(ordersTable.id, orderId), eq(ordersTable.status, "PENDING")))
+      .returning({ id: ordersTable.id });
+
+    return updatedOrders.length > 0;
   }
 
   async findPendingOrdersByPizzaType(pizzaType: string): Promise<Order[]> {

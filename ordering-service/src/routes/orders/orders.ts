@@ -20,8 +20,13 @@ type OrderServiceLike = {
   placeOrder(order: Order): Promise<{ id: string; price: number }>;
 };
 
+type StaleOrderSchedulerLike = {
+  schedule(orderId: string): Promise<void>;
+};
+
 export type OrdersRouteOptions = {
   orderServiceFactory?: () => OrderServiceLike;
+  staleOrderScheduler?: StaleOrderSchedulerLike;
 };
 
 const orders: FastifyPluginAsync<OrdersRouteOptions> = async (
@@ -30,6 +35,7 @@ const orders: FastifyPluginAsync<OrdersRouteOptions> = async (
 ): Promise<void> => {
   const orderServiceFactory =
     opts.orderServiceFactory ?? (() => new OrderService());
+  const staleOrderScheduler = opts.staleOrderScheduler ?? fastify.staleOrderJobs;
 
   fastify.withTypeProvider<ZodTypeProvider>().post(
     "/",
@@ -42,9 +48,14 @@ const orders: FastifyPluginAsync<OrdersRouteOptions> = async (
     },
     async function (request, reply) {
       const { countryCode, pizzas, address } = request.body as z.infer<typeof orderSchema>;
-      return orderServiceFactory().placeOrder(
+      const result = await orderServiceFactory().placeOrder(
         new Order(countryCode, pizzas as Pizza[], address, undefined),
       );
+      if (!result.id) {
+        throw new Error("Saved order is missing id");
+      }
+      await staleOrderScheduler.schedule(result.id);
+      return result;
     },
   );
 };

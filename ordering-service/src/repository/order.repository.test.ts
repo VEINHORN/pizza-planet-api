@@ -3,6 +3,21 @@ import { OrderRepository } from "./order.repository.ts";
 import { Order, type Pizza } from "../service/Order.ts";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
 
+vi.mock("../db/schema.ts", () => ({
+  ordersTable: {
+    id: "order-id-column",
+    status: "order-status-column",
+  },
+  orderItemTable: {
+    order_id: "order-item-order-id-column",
+  },
+}));
+
+vi.mock("drizzle-orm", () => ({
+  and: vi.fn((...conditions) => ({ conditions })),
+  eq: vi.fn((left, right) => ({ left, right })),
+}));
+
 describe("OrderRepository", () => {
   let mockDb: any;
   let repository: OrderRepository;
@@ -16,6 +31,8 @@ describe("OrderRepository", () => {
       from: vi.fn().mockReturnThis(),
       where: vi.fn().mockReturnThis(),
       leftJoin: vi.fn().mockReturnThis(),
+      update: vi.fn().mockReturnThis(),
+      set: vi.fn().mockReturnThis(),
       delete: vi.fn().mockReturnThis(),
       transaction: vi.fn((callback) => callback(mockDb)),
     };
@@ -119,5 +136,17 @@ describe("OrderRepository", () => {
     await repository.deleteOrder(orderId);
     expect(mockDb.delete).toHaveBeenCalled();
     expect(mockDb.where).toHaveBeenCalled();
+  });
+
+  it("should mark a pending order as stale", async () => {
+    mockDb.returning.mockResolvedValueOnce([{ id: "test-uuid" }]);
+
+    const result = await repository.markOrderAsStale("test-uuid");
+
+    expect(result).toBe(true);
+    expect(mockDb.update).toHaveBeenCalled();
+    expect(mockDb.set).toHaveBeenCalledWith({ status: "STALE" });
+    expect(mockDb.where).toHaveBeenCalled();
+    expect(mockDb.returning).toHaveBeenCalledWith({ id: "order-id-column" });
   });
 });
